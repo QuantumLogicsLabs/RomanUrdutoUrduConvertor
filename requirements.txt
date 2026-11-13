@@ -1,0 +1,9 @@
+lxml>=5.0
+# website (web/app.py):
+fastapi>=0.110
+uvicorn>=0.29
+python-multipart>=0.0.6
+# only needed to build samples/sample_roman.docx:
+python-docx>=1.1
+# only needed for running tests with pytest (optional):
+# pytest

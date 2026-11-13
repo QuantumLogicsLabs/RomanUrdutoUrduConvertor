@@ -1,0 +1,19 @@
+# ============================================================================
+#  YOUR OWN WORDS  -  these always win over the built-in dictionary.
+#
+#  After converting, the program lists words it did not know. If one came
+#  out wrong, add a line here and run the program again.
+#
+#  Either way round works:
+#      اردو = roman, other spelling, another spelling
+#      roman, other spelling = اردو
+#
+#  Phrases (several words) are allowed:      کہہ رہا = keh raha
+#  Keep a word in English (no conversion):   Microsoft = Microsoft
+#  Lines starting with # are ignored.
+# ============================================================================
+
+# examples (remove the # to use them):
+# نادرا = nadra
+# واپڈا = wapda
+# کیا = kya, kia, kiya
