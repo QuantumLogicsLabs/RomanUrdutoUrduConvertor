@@ -20,7 +20,11 @@ import zipfile
 from pathlib import Path
 from urllib.parse import quote
 
-ROOT = Path(__file__).resolve().parents[1]
+HERE = Path(__file__).resolve().parent
+# web/ is self-contained (it is deployed on its own): it carries its own copy of the
+# roman_urdu package and custom_words.txt. When run from the full repo, fall back to the
+# repo-level copies if the bundled ones are missing.
+ROOT = HERE if (HERE / "roman_urdu").is_dir() else HERE.parent
 sys.path.insert(0, str(ROOT))
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile  # noqa: E402
@@ -35,6 +39,21 @@ from roman_urdu.transliterator import ARABIC_SCRIPT, normalize_urdu  # noqa: E40
 
 STATIC = Path(__file__).resolve().parent / "static"
 CUSTOM_WORDS = ROOT / "custom_words.txt"
+
+
+def _writable_words_file(path: Path) -> Path:
+    """On read-only hosts (e.g. Vercel) keep an editable copy of the word list in /tmp."""
+    try:
+        with open(path, "a", encoding="utf-8"):
+            return path
+    except OSError:
+        tmp = Path(tempfile.gettempdir()) / "custom_words.txt"
+        if not tmp.exists():
+            tmp.write_text(path.read_text(encoding="utf-8-sig") if path.exists() else "", encoding="utf-8")
+        return tmp
+
+
+CUSTOM_WORDS = _writable_words_file(CUSTOM_WORDS)
 MAX_UPLOAD = 20 * 1024 * 1024          # 20 MB .docx
 MAX_UNZIPPED = 200 * 1024 * 1024       # refuse zip bombs
 KEEP_DOCS = 40                         # converted files kept in memory
